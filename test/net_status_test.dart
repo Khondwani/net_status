@@ -27,6 +27,9 @@ class MockNetStatusPlatform
   Future<void> stopListening() {
     return Future.value();
   }
+
+  @override
+  Stream<bool> get connectivityStream => throw UnimplementedError();
 }
 
 void main() {
