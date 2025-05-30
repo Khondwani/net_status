@@ -1,6 +1,3 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-
 import 'net_status_platform_interface.dart';
 
 class NetStatus {
@@ -19,5 +16,11 @@ class NetStatus {
 
   Future<bool> isConnected() {
     return NetStatusPlatform.instance.isConnected();
+  }
+
+  Stream<bool> get connectivityStream {
+    return NetStatusPlatform
+        .instance
+        .connectivityStream; // this will get from our method channel file
   }
 }

@@ -38,8 +38,7 @@ class NetStatusPlugin: FlutterPlugin, MethodCallHandler, EventChannel.StreamHand
     when (call.method) {
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       "isConnected" -> {
-        val activeNetwork = connectivityManager?.activeNetworkInfo
-        result.success(activeNetwork != null && activeNetwork.isConnected)
+        isConnected()
       }
       "startListening" -> {
         startMonitoring()

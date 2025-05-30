@@ -49,23 +49,24 @@ public class NetStatusPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
 
   public func startMonitoring() {
     guard !isMonitoring else { return }
-    
+    isMonitoring = true
     monitorQueue = DispatchQueue(label: "NetworkMonitor")
     pathMonitor = NWPathMonitor()
     
     pathMonitor?.pathUpdateHandler = { [weak self] path in
       if path.status == .satisfied {
         print("Connected to the network")
+       
       } else {
         print("No network connection")
+       
       }
       DispatchQueue.main.async {
-                    self?.sendConnectivityUpdate()
-                }
+        self?.sendConnectivityUpdate()
+      }
     }
     
     pathMonitor?.start(queue: monitorQueue!)
-    isMonitoring = true
   }
 
   private func sendConnectivityUpdate() {
@@ -74,11 +75,12 @@ public class NetStatusPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
 
   public func stopMonitoring() {
     guard isMonitoring else { return }
-    
+    isMonitoring = false
+
     pathMonitor?.cancel()
     pathMonitor = nil
     monitorQueue = nil
-    isMonitoring = false
+    
   }
 
   public func isConnected() -> Bool {
@@ -87,7 +89,12 @@ public class NetStatusPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     }
     
     if path.status == .satisfied {
-      return true
+      // Check specific connection types
+      let usesWifi = path.usesInterfaceType(.wifi)
+      let usesCellular = path.usesInterfaceType(.cellular)
+      
+      // Return true if connected via WiFi or cellular
+      return usesWifi || usesCellular
     } else {
       return false
     }

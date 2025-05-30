@@ -38,4 +38,8 @@ abstract class NetStatusPlatform extends PlatformInterface {
   Future<bool> isConnected() {
     throw UnimplementedError('isConnected() has not been implemented.');
   }
+
+  Stream<bool> get connectivityStream {
+    throw UnimplementedError('connectivityStream() has not been implemented.');
+  }
 }

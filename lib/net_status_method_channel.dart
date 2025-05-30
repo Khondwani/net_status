@@ -8,7 +8,7 @@ class MethodChannelNetStatus extends NetStatusPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel = const MethodChannel('net_status');
-  final _eventChannel = const EventChannel('net_status_events');
+  final _eventChannel = const EventChannel('net_status/events');
 
   Stream<bool>? _connectivityStream;
 
@@ -48,6 +48,7 @@ class MethodChannelNetStatus extends NetStatusPlatform {
     }
   }
 
+  @override
   Stream<bool> get connectivityStream {
     _connectivityStream ??= _eventChannel.receiveBroadcastStream().map(
       (dynamic event) =>
