@@ -32,9 +32,24 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _netStatusPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          await _netStatusPlugin.getPlatformVersion() ??
+          'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
+    }
+
+    try {
+      // Attempt to start listening for network status changes
+      await _netStatusPlugin.startListening();
+    } catch (e) {
+      print('Error starting listening: $e');
+    }
+    try {
+      // Check if the device is connected to the network
+      bool isConnected = await _netStatusPlugin.isConnected();
+      print('Is connected: $isConnected');
+    } catch (e) {
+      print('Error checking connection status: $e');
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -51,12 +66,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        appBar: AppBar(title: const Text('Plugin example app')),
+        body: Center(child: Text('Running on: $_platformVersion\n')),
       ),
     );
   }

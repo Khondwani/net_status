@@ -26,4 +26,16 @@ abstract class NetStatusPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<void> startListening() {
+    throw UnimplementedError('startListening() has not been implemented.');
+  }
+
+  Future<void> stopListening() {
+    throw UnimplementedError('stopListening() has not been implemented.');
+  }
+
+  Future<bool> isConnected() {
+    throw UnimplementedError('isConnected() has not been implemented.');
+  }
 }
