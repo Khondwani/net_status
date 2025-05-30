@@ -1,9 +1,10 @@
 import Flutter
 import UIKit
 import Network
+import SystemConfiguration
 
-public class NetStatusPlugin: NSObject, FlutterPlugin {
-
+public class NetStatusPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
+// add FlutterStreamHandler to handle event streams
     private var pathMonitor: NWPathMonitor? 
     private var monitorQueue: DispatchQueue?
     private var isMonitoring: Bool = false
@@ -21,12 +22,10 @@ public class NetStatusPlugin: NSObject, FlutterPlugin {
     switch call.method {
     case "getPlatformVersion":
       result("iOS " + UIDevice.current.systemVersion)
-    case "getNetworkStatus":
-      result(getNetworkStatus())
-    case "startMonitoring":
+    case "startListening": // these names should mart the DART SIDE in the methodchannelNet file
       startMonitoring()
       result("iOS Network monitoring started")
-    case "stopMonitoring":
+    case "stopListening":
       stopMonitoring()
       result("iOS Network monitoring stopped")
     case "isConnected":
@@ -36,16 +35,18 @@ public class NetStatusPlugin: NSObject, FlutterPlugin {
     }
   }
 
-  public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) {
+  public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
     self.eventSink = events
     startMonitoring()
+    return nil
   }
 
-  public func onCancel(withArguments arguments: Any?) {
+  public func onCancel(withArguments arguments: Any?) -> FlutterError? {
     stopMonitoring()
     self.eventSink = nil
+    return nil
   }
-  
+
   public func startMonitoring() {
     guard !isMonitoring else { return }
     
@@ -67,9 +68,9 @@ public class NetStatusPlugin: NSObject, FlutterPlugin {
     isMonitoring = true
   }
 
-    private func sendConnectivityUpdate() {
+  private func sendConnectivityUpdate() {
         eventSink?(isConnected())
-    }
+  }
 
   public func stopMonitoring() {
     guard isMonitoring else { return }
@@ -82,7 +83,7 @@ public class NetStatusPlugin: NSObject, FlutterPlugin {
 
   public func isConnected() -> Bool {
     guard let path = pathMonitor?.currentPath else {
-      return "Unknown"
+      return false
     }
     
     if path.status == .satisfied {

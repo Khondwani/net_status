@@ -10,27 +10,11 @@ class NetStatus {
   }
 
   Future<void> startListening() {
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.iOS:
-        return NetStatusPlatform.instance.startListening();
-      default:
-        throw PlatformException(
-          code: 'UNSUPPORTED_PLATFORM',
-          message: 'This platform is not supported',
-        );
-    }
+    return NetStatusPlatform.instance.startListening();
   }
 
   Future<void> stopListening() {
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.iOS:
-        return NetStatusPlatform.instance.stopListening();
-      default:
-        throw PlatformException(
-          code: 'UNSUPPORTED_PLATFORM',
-          message: 'This platform is not supported',
-        );
-    }
+    return NetStatusPlatform.instance.stopListening();
   }
 
   Future<bool> isConnected() {
